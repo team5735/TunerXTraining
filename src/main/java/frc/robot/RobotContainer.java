@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import javax.sound.sampled.SourceDataLine;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -15,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.Commands.ButtonPressedCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -37,6 +39,16 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    public final ButtonPressedCommand buttonPressX = new ButtonPressedCommand("x");
+    public final ButtonPressedCommand buttonPressY = new ButtonPressedCommand("y");
+    public final ButtonPressedCommand buttonPressA = new ButtonPressedCommand("a");
+    public final ButtonPressedCommand buttonPressB = new ButtonPressedCommand("b");
+
+    // Z as Controller A and button 1
+    // X as Controller B and button 2
+    // C as Controller X and button 3
+    // V as Controller Y and button 4
+    
     public RobotContainer() {
         configureBindings();
     }
@@ -60,6 +72,11 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
+        joystick.x().whileTrue(buttonPressX);
+        joystick.y().whileTrue(buttonPressY);
+        joystick.a().whileTrue(buttonPressA);
+        joystick.b().whileTrue(buttonPressB);
+
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
@@ -77,6 +94,8 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
+
+    
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
