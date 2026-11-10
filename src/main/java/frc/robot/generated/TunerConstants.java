@@ -209,7 +209,7 @@ public class TunerConstants {
         );
     }
 
-
+    public static final int DRIVE_CONTROLLER_PORT = 0;
     /**
      * Swerve Drive class utilizing CTR Electronics' Phoenix 6 API with the selected device types.
      */

@@ -5,25 +5,44 @@
 package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.generated.TunerConstants;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
-
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
     private final RobotContainer m_robotContainer;
-
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
         .withTimestampReplay()
         .withJoystickReplay();
-
+    public final CommandXboxController driveController = new CommandXboxController(TunerConstants.DRIVE_CONTROLLER_PORT);
     public Robot() {
+        TunerConstants constants;
         m_robotContainer = new RobotContainer();
     }
+    private void configureBindings(){
+        setUpDriverBindings();
+    }
+    private void setUpDriverBindings(){
+        driveController.x().whileTrue(drivetrain.runOnce(()-> drive.withVelocityX(7)));
 
+   }
+   public void distanceforTest(){
+        if(driveController.x() != null){
+            System.out.println();
+        }
+
+   }
     @Override
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
@@ -77,6 +96,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testExit() {}
+
+  
 
     @Override
     public void simulationPeriodic() {}
