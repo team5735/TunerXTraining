@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Commands.ButtonPressedCommand;
+import frc.robot.Commands.DriveController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -44,6 +45,8 @@ public class RobotContainer {
     public final ButtonPressedCommand buttonPressA = new ButtonPressedCommand("a");
     public final ButtonPressedCommand buttonPressB = new ButtonPressedCommand("b");
 
+    public final DriveController driveCommand = new DriveController(drive, drivetrain);
+
     // Z as Controller A and button 1
     // X as Controller B and button 2
     // C as Controller X and button 3
@@ -59,7 +62,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                drive.withVelocityX(-joystick.getLeftX() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
@@ -72,10 +75,12 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        joystick.x().whileTrue(buttonPressX);
-        joystick.y().whileTrue(buttonPressY);
-        joystick.a().whileTrue(buttonPressA);
-        joystick.b().whileTrue(buttonPressB);
+        // joystick.x().whileTrue(buttonPressX);
+        // joystick.y().whileTrue(buttonPressY);
+        // joystick.a().whileTrue(buttonPressA);
+        // joystick.b().whileTrue(buttonPressB);
+
+        joystick.x().whileTrue(driveCommand);
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->

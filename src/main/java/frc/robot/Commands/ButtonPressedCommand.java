@@ -19,6 +19,7 @@ public class ButtonPressedCommand extends Command{
     @Override
     public void execute() {
         System.out.println(character + " is currently pressed");
+        
     }
 
     @Override
