@@ -299,7 +299,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Command applyRequest(Supplier<SwerveRequest> request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'applyRequest'");
+        return run(() -> this.setControl(request.get()));
     }
+
 }
