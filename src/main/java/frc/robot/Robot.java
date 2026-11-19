@@ -4,16 +4,21 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.HootAutoReplay;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 
 public class Robot extends TimedRobot {
@@ -21,6 +26,7 @@ public class Robot extends TimedRobot {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
     private final RobotContainer m_robotContainer;
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); 
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
         .withTimestampReplay()
@@ -29,14 +35,25 @@ public class Robot extends TimedRobot {
     public Robot() {
         TunerConstants constants;
         m_robotContainer = new RobotContainer();
-    }
-    private void configureBindings(){
         setUpDriverBindings();
     }
-    private void setUpDriverBindings(){
+    
+    public void setUpDriverBindings(){
+        Trigger rotateLeft = driveController.leftStick().and(driveController.rightStick().negate());
+        Trigger rotateRight = driveController.rightStick().and(driveController.leftStick().negate());
+        Trigger straight = driveController.rightStick().and(driveController.leftStick());
         driveController.x().whileTrue(drivetrain.runOnce(()-> drive.withVelocityX(7)));
-
-   }
+        rotateLeft.whileTrue(drivetrain.applyRequest(()->
+                drive.withVelocityX(0)
+                     .withVelocityY(0)
+                     .withRotationalRate(MaxAngularRate)
+            ));
+        rotateRight.whileTrue(drivetrain.applyRequest(()->
+                 drive.withVelocityX(0)
+                      .withVelocityY(0)
+                      .withRotationalRate(-MaxAngularRate)
+        ));
+            }
    public void distanceforTest(){
         if(driveController.x() != null){
             System.out.println();
