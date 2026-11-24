@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.HootAutoReplay;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.fasterxml.jackson.databind.Module.SetupContext;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -48,11 +49,31 @@ public class Robot extends TimedRobot {
                      .withVelocityY(0)
                      .withRotationalRate(MaxAngularRate)
             ));
+        rotateLeft.whileFalse(drivetrain.applyRequest(()->
+                drive.withVelocityX(0)
+                     .withVelocityY(0)
+                     .withRotationalRate(0)
+        ));
         rotateRight.whileTrue(drivetrain.applyRequest(()->
                  drive.withVelocityX(0)
                       .withVelocityY(0)
                       .withRotationalRate(-MaxAngularRate)
         ));
+        rotateRight.whileFalse(drivetrain.applyRequest(()->
+                drive.withVelocityX(0)
+                     .withVelocityY(0)
+                     .withRotationalRate(0)
+        ));
+            straight.whileTrue(drivetrain.applyRequest(()->
+                drive.withVelocityX(2)
+                     .withVelocityY(2)
+                     .withRotationalRate(0)
+        ));
+            straight.whileFalse(drivetrain.applyRequest(()->
+                drive.withVelocityX(0)
+                     .withVelocityY(0)
+                     .withRotationalRate(0)    
+            ));
             }
    public void distanceforTest(){
         if(driveController.x() != null){
